@@ -1,0 +1,155 @@
+const Document = require("../../models/admin/document");
+const cloudinary = require("../../helpers/admin/cloudinary");
+
+const insertMarkingSchema = async (req, res) => {
+  try {
+    const result = await cloudinary.uploader.upload(req.file.path, {
+      folder: "marking",
+    });
+    let document = new Document({
+      name: req.body.name,
+      desc: req.body.desc,
+      studentAllowed: req.body.studentAllowed,
+      staffAllowed: req.body.staffAllowed,
+      docType: "marking",
+      degree: req.body.degree,
+
+      document: result.secure_url,
+      cloudinary_id: result.public_id,
+    });
+
+    documentSaved = await document.save();
+
+    res.json(documentSaved);
+  } catch (error) {
+    res.json(error);
+  }
+};
+
+const insertPresentation = async (req, res) => {
+  try {
+    const result = await cloudinary.uploader.upload(req.file.path, {
+      folder: "presentation",
+    });
+    let document = new Document({
+      name: req.body.name,
+      desc: req.body.desc,
+      studentAllowed: req.body.studentAllowed,
+      staffAllowed: req.body.staffAllowed,
+      docType: "presentaion",
+      degree: req.body.degree,
+
+      document: result.secure_url,
+      cloudinary_id: result.public_id,
+    });
+
+    documentSaved = await document.save();
+    res.json(documentSaved);
+  } catch (error) {
+    res.json(error);
+  }
+};
+
+const insertDocument = async (req, res) => {
+  try {
+    const result = await cloudinary.uploader.upload(req.file.path, {
+      folder: "document",
+    });
+    let document = new Document({
+      name: req.body.name,
+      desc: req.body.desc,
+      studentAllowed: req.body.studentAllowed,
+      staffAllowed: req.body.staffAllowed,
+      docType: "document",
+      degree: req.body.degree,
+
+      document: result.secure_url,
+      cloudinary_id: result.public_id,
+    });
+
+    documentSaved = await document.save();
+    res.json(documentSaved);
+  } catch (error) {
+    res.json(error);
+  }
+};
+
+const updateDocument = async (req, res) => {
+  const documentId = req.params.id;
+
+  try {
+    const result = await cloudinary.uploader.upload(req.file.path, {
+      folder: "document",
+    });
+    let document = new Document({
+      name: req.body.name,
+      desc: req.body.desc,
+      studentAllowed: req.body.studentAllowed,
+      staffAllowed: req.body.staffAllowed,
+      docType: "document",
+      degree: req.body.degree,
+
+      document: result.secure_url,
+      cloudinary_id: result.public_id,
+    });
+
+    documentSaved = await document.findeOneAndUpdate({ _id: documentId });
+    res.json(documentSaved);
+  } catch (error) {
+    res.json(error);
+  }
+};
+
+const deleteDocument = async (req, res) => {
+  try {
+    let document = await Document.findById(req.params.id);
+    await cloudinary.uploader.destroy(document.cloudinary_id);
+    await document.remove();
+    res.json(document);
+  } catch (error) {
+    res.json(error);
+  }
+};
+
+const getDocument = async (req, res) => {
+  const documentId = req.params.id;
+  try {
+    const document = await Document.findById({ _id: documentId });
+    if (document) {
+      res.json(document);
+    } else {
+      res.json("document not found");
+    }
+  } catch (error) {
+    res.json(error);
+  }
+};
+
+const getDocumentsST = async (req, res) => {
+  try {
+    const document = await Document.find({ studentAllowed: "true" });
+    res.json(document);
+  } catch (error) {
+    res.json(error);
+  }
+};
+
+const getDocumentAll = async (req, res) => {
+  try {
+    const document = await Document.find();
+    res.json(document);
+  } catch (error) {
+    res.json(error);
+  }
+};
+
+module.exports = {
+  insertDocument,
+  updateDocument,
+  deleteDocument,
+  getDocumentsST,
+  getDocument,
+  insertMarkingSchema,
+  insertPresentation,
+  getDocumentAll,
+};
